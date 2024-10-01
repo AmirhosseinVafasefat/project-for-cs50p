@@ -47,6 +47,16 @@ class Apple():
         self.x = int(random.randint(0, WINH)/TILE_SIZE)*TILE_SIZE
         self.y = int(random.randint(0, WINH)/TILE_SIZE)*TILE_SIZE
 
+def correct_apple_position(apple, snake):
+    snake.body.append(snake.head)
+    for part in snake.body:
+        if apple.x == part.x and apple.y == part.y:
+            snake.body.remove(snake.head)
+            return False
+    else:
+        snake.body.remove(snake.head)
+        return True
+
 def main():
     snake = Snake()
     apple = Apple()
@@ -83,6 +93,8 @@ def main():
         if snake.head.x == apple.x and snake.head.y == apple.y:
             snake.body.append(pygame.Rect(snake.body[len(snake.body)-1].x, snake.body[len(snake.body)-1].y, TILE_SIZE, TILE_SIZE))
             apple = Apple()
+            while not correct_apple_position(apple, snake):
+                apple = Apple()
             score += 1
 
         WIN.fill(WHITE)
