@@ -12,15 +12,15 @@ BLACK = 0, 0, 0
 
 TILE_SIZE = 50
 START = 350
-HEAD_IMAGE = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("assets\greenhead.png"), (TILE_SIZE, TILE_SIZE)), -90)
-BODY_IMAGE = pygame.transform.scale(pygame.image.load("assets\greenblock.png"), (TILE_SIZE, TILE_SIZE))
-APPLE_IMAGE = pygame.transform.scale(pygame.image.load("assets\redblock.png"), (TILE_SIZE, TILE_SIZE))
+HEAD_IMAGE = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("assets/greenhead.png"), (TILE_SIZE, TILE_SIZE)), -90)
+BODY_IMAGE = pygame.transform.scale(pygame.image.load("assets/greenblock.png"), (TILE_SIZE, TILE_SIZE))
+APPLE_IMAGE = pygame.transform.scale(pygame.image.load("assets/redblock.png"), (TILE_SIZE, TILE_SIZE))
 
 class Snake():
     def __init__(self) -> None:
         self.x = START
         self.y = START
-        self.rotation = 0
+        self.rotation = 90
         self.head = pygame.Rect(self.x, self.y, TILE_SIZE, TILE_SIZE)
         self.body = [pygame.Rect(self.x, self.y - TILE_SIZE, TILE_SIZE, TILE_SIZE)]
         self.dead = False
