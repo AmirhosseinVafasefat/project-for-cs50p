@@ -56,12 +56,31 @@ def correct_apple_position(apple, snake):
     else:
         snake.body.remove(snake.head)
         return True
+    
+def event_handler(snake):
+    inputRotation = snake.rotation
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RIGHT:
+                inputRotation = 0
+            elif event.key == pygame.K_UP:
+                inputRotation = 90
+            elif event.key == pygame.K_LEFT:
+                inputRotation = 180
+            elif event.key == pygame.K_DOWN:
+                inputRotation = 270
+
+        if (snake.rotation in (0, 180) and inputRotation in (90, 270)) or (snake.rotation in (90, 270) and inputRotation in (0, 180)):
+            snake.rotation = inputRotation
 
 def main():
     snake = Snake()
     apple = Apple()
     score = 0
-    inputRotation = 90
 
     clock = pygame.time.Clock()
     run = True
@@ -69,29 +88,14 @@ def main():
     while run:
         clock.tick(FPS)
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-                print(score)
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT:
-                    inputRotation = 0
-                elif event.key == pygame.K_UP:
-                    inputRotation = 90
-                elif event.key == pygame.K_LEFT:
-                    inputRotation = 180
-                elif event.key == pygame.K_DOWN:
-                    inputRotation = 270
-
-        if (snake.rotation in (0, 180) and inputRotation in (90, 270)) or (snake.rotation in (90, 270) and inputRotation in (0, 180)):
-            snake.rotation = inputRotation
+        event_handler(snake)
 
         snake.movement()
 
         if snake.head.x == apple.x and snake.head.y == apple.y:
+            snake.body.reverse()
             snake.body.append(pygame.Rect(snake.body[len(snake.body)-1].x, snake.body[len(snake.body)-1].y, TILE_SIZE, TILE_SIZE))
+            snake.body.reverse()
             apple = Apple()
             while not correct_apple_position(apple, snake):
                 apple = Apple()
