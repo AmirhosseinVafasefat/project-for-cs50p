@@ -117,6 +117,20 @@ def draw_windows(snake, apple):
     WIN.blit(rotated_head, (snake.head.x, snake.head.y))
     pygame.display.update()
 
+def game_over():
+    font = pygame.font.Font('freesansbold.ttf', 32)
+    text = font.render('GAME OVER', True, BLACK, WHITE)
+    textRect = text.get_rect()
+    textRect.center = (WINW // 2, WINH // 2)
+    WIN.blit(text, textRect)
+    pygame.display.update()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
 def main():
     snake = Snake()
     apple = Apple()
@@ -145,19 +159,7 @@ def main():
 
         draw_windows(snake, apple)
 
-
-    font = pygame.font.Font('freesansbold.ttf', 32)
-    text = font.render('GAME OVER', True, BLACK, WHITE)
-    textRect = text.get_rect()
-    textRect.center = (WINW // 2, WINH // 2)
-    WIN.blit(text, textRect)
-    pygame.display.update()
-
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
+    game_over()
 
 if __name__ == "__main__":
     main()
