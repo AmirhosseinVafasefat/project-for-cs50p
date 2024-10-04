@@ -68,7 +68,7 @@ def movement(snake):
         snake.body[i].x, snake.body[i].y = snake.body[i+1].x, snake.body[i+1].y
 
     if snake.rotation == 0:
-        if snake.head.x >= WINW:
+        if snake.head.x + TILE_SIZE * 2>= WINW:
             snake.dead = True
         snake.head.x += TILE_SIZE
     elif snake.rotation == 90:
@@ -80,7 +80,7 @@ def movement(snake):
             snake.dead = True
         snake.head.x -= TILE_SIZE
     elif snake.rotation == 270:
-        if snake.head.y >= WINH:
+        if snake.head.y + TILE_SIZE * 2 >= WINH:
             snake.dead = True
         snake.head.y += TILE_SIZE
 
