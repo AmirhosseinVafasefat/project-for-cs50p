@@ -16,10 +16,11 @@ START = 350
 RTURN_IMAGE = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("assets/rightturn.png"), (TILE_SIZE, TILE_SIZE)), -90)
 LTURN_IMAGE = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("assets/leftturn.png"), (TILE_SIZE, TILE_SIZE)), -90)
 TAIL_IMAGE = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("assets/tail.png"), (TILE_SIZE, TILE_SIZE)), -90)
-DEAD_IMAGE = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("assets/deadgreenhead.png"), (TILE_SIZE, TILE_SIZE)), -90)
-HEAD_IMAGE = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("assets/greenhead.png"), (TILE_SIZE, TILE_SIZE)), -90)
+DEAD_IMAGE = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("assets/dead.png"), (TILE_SIZE, TILE_SIZE)), -90)
+HEAD_IMAGE = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("assets/head.png"), (TILE_SIZE, TILE_SIZE)), -90)
 BODY_IMAGE = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("assets/body.png"), (TILE_SIZE, TILE_SIZE)), -90)
-APPLE_IMAGE = pygame.transform.scale(pygame.image.load("assets/redblock.png"), (TILE_SIZE, TILE_SIZE))
+BOX_IMAGE = pygame.transform.scale(pygame.image.load("assets/box.png"), (TILE_SIZE, TILE_SIZE))
+APPLE_IMAGE = pygame.transform.scale(pygame.image.load("assets/apple.png"), (TILE_SIZE, TILE_SIZE))
 
 class Snake():
     def __init__(self) -> None:
@@ -101,13 +102,13 @@ def draw_windows(snake, apple, tail_dir):
     WIN.fill(WHITE)
     for i in range(0, WINW, TILE_SIZE):
         pygame.draw.line(WIN, BLACK, (i, 0), (i, WINH))
-        pygame.draw.rect(WIN, BLACK, (i, 0, TILE_SIZE, TILE_SIZE))
-        pygame.draw.rect(WIN, BLACK, (i, WINH-TILE_SIZE, TILE_SIZE, TILE_SIZE))
+        WIN.blit(BOX_IMAGE, (i, 0))
+        WIN.blit(BOX_IMAGE, (i, WINH-TILE_SIZE))
         
     for i in range(0, WINH, TILE_SIZE):
         pygame.draw.line(WIN, BLACK, (0, i), (WINW, i))
-        pygame.draw.rect(WIN, BLACK, (0, i, TILE_SIZE, TILE_SIZE))
-        pygame.draw.rect(WIN, BLACK, (WINW-TILE_SIZE, i, TILE_SIZE, TILE_SIZE))
+        WIN.blit(BOX_IMAGE, (0, i))
+        WIN.blit(BOX_IMAGE, (WINW-TILE_SIZE, i))
         
     if snake.dead:
         rotated_head = pygame.transform.rotate(DEAD_IMAGE, snake.rotation)
@@ -157,9 +158,9 @@ def draw_windows(snake, apple, tail_dir):
 
     snake.body.remove(snake.head)
     rotated_tail = pygame.transform.rotate(TAIL_IMAGE, tail_dir)
+    WIN.blit(APPLE_IMAGE, (apple.x, apple.y))
     WIN.blit(rotated_head, (snake.head.x, snake.head.y))
     WIN.blit(rotated_tail, (snake.body[0].x, snake.body[0].y))
-    WIN.blit(APPLE_IMAGE, (apple.x, apple.y))
     pygame.display.update()
 
 def game_over():
@@ -192,6 +193,12 @@ def main():
 
         movement(snake)
 
+        if is_dead(snake):
+            run = False
+            snake.dead = True
+
+        draw_windows(snake, apple, tail_dir)
+
         if can_eat_apple(snake, apple):
             apple = Apple()
             print(f"{apple.x}, {apple.y}")
@@ -199,12 +206,6 @@ def main():
                 apple = Apple()
                 print(f"re-evaluate. {apple.x}, {apple.y}")
             score += 1
-        
-        if is_dead(snake):
-            run = False
-            snake.dead = True
-
-        draw_windows(snake, apple, tail_dir)
 
     game_over()
 
