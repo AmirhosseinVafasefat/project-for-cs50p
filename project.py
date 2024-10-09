@@ -10,7 +10,7 @@ FPS = 5
 
 WHITE = 255, 255, 255
 BLACK = 0, 0, 0
-GREEN_GREY = 10, 50, 10
+LIGHT_YELLOW = 180, 180, 150
 
 TILE_SIZE = 50
 START = 350
@@ -40,7 +40,7 @@ class Apple():
         self.x = int(random.randint(0 + TILE_SIZE, WINW - TILE_SIZE * 2)/TILE_SIZE)*TILE_SIZE
         self.y = int(random.randint(0 + TILE_SIZE, WINH - TILE_SIZE * 2)/TILE_SIZE)*TILE_SIZE
 
-def correct_apple_position(apple, snake):
+def correct_apple_position(snake, apple):
     snake.body.append(snake.head)
     for part in snake.body:
         if apple.x == part.x and apple.y == part.y:
@@ -51,7 +51,7 @@ def correct_apple_position(apple, snake):
         return True
     
 def event_handler(snake):
-    inpurDirection = snake.headDirection
+    inputDirection = snake.headDirection
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -59,18 +59,18 @@ def event_handler(snake):
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
-                inpurDirection = 0
+                inputDirection = 0
             elif event.key == pygame.K_UP:
-                inpurDirection = 90
+                inputDirection = 90
             elif event.key == pygame.K_LEFT:
-                inpurDirection = 180
+                inputDirection = 180
             elif event.key == pygame.K_DOWN:
-                inpurDirection = 270
+                inputDirection = 270
 
-    if (snake.headDirection in (0, 180) and inpurDirection in (90, 270)) or (snake.headDirection in (90, 270) and inpurDirection in (0, 180)):
-        snake.headDirection = inpurDirection
+    if (snake.headDirection in (0, 180) and inputDirection in (90, 270)) or (snake.headDirection in (90, 270) and inputDirection in (0, 180)):
+        snake.headDirection = inputDirection
 
-def movement(snake):
+def move(snake):
     snake.body.append(snake.head)
     for i in range(len(snake.body)-1):
         snake.body[i].x, snake.body[i].y = snake.body[i+1].x, snake.body[i+1].y
@@ -105,12 +105,12 @@ def is_dead(snake):
 def draw_backgound():
     WIN.blit(BACKGROUND, (0, 0))
     for i in range(0, WINW, TILE_SIZE):
-        pygame.draw.line(WIN, GREEN_GREY, (i, 0), (i, WINH))
+        pygame.draw.line(WIN, LIGHT_YELLOW, (i, 0), (i, WINH))
         WIN.blit(BOX_IMAGE, (i, 0))
         WIN.blit(BOX_IMAGE, (i, WINH-TILE_SIZE))
         
     for i in range(0, WINH, TILE_SIZE):
-        pygame.draw.line(WIN, GREEN_GREY, (0, i), (WINW, i))
+        pygame.draw.line(WIN, LIGHT_YELLOW, (0, i), (WINW, i))
         WIN.blit(BOX_IMAGE, (0, i))
         WIN.blit(BOX_IMAGE, (WINW-TILE_SIZE, i))
     
@@ -203,7 +203,7 @@ def main():
 
         event_handler(snake)
 
-        movement(snake)
+        move(snake)
 
         if is_dead(snake):
             run = False
@@ -215,7 +215,7 @@ def main():
 
         if can_eat_apple(snake, apple):
             apple = Apple()
-            while not correct_apple_position(apple, snake):
+            while not correct_apple_position(snake, apple):
                 apple = Apple()
             score += 1
         
