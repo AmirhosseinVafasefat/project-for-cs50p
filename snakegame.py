@@ -6,13 +6,16 @@ WINSIZE = WINW, WINH = 750, 750
 WIN = pygame.display.set_mode(WINSIZE)
 pygame.display.set_caption("Snake Game")
 
-FPS = 2
+FPS = 5
 
 WHITE = 255, 255, 255
 BLACK = 0, 0, 0
+GREEN_GREY = 10, 50, 10
 
 TILE_SIZE = 50
 START = 350
+
+BACKGROUND = pygame.transform.scale(pygame.image.load("assets/background.png"), WINSIZE)
 RTURN_IMAGE = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("assets/rightturn.png"), (TILE_SIZE, TILE_SIZE)), -90)
 LTURN_IMAGE = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("assets/leftturn.png"), (TILE_SIZE, TILE_SIZE)), -90)
 TAIL_IMAGE = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("assets/tail.png"), (TILE_SIZE, TILE_SIZE)), -90)
@@ -26,15 +29,16 @@ class Snake():
     def __init__(self) -> None:
         self.x = START
         self.y = START
-        self.rotation = 90
+        self.headDirection = 90
+        self.tailDirection = 90
         self.head = pygame.Rect(self.x, self.y, TILE_SIZE, TILE_SIZE)
         self.body = [pygame.Rect(self.x, self.y - TILE_SIZE, TILE_SIZE, TILE_SIZE)]
         self.dead = False
     
 class Apple():
     def __init__(self) -> None:
-        self.x = int(random.randint(0 + TILE_SIZE, WINW - TILE_SIZE)/TILE_SIZE)*TILE_SIZE
-        self.y = int(random.randint(0 + TILE_SIZE, WINH - TILE_SIZE)/TILE_SIZE)*TILE_SIZE
+        self.x = int(random.randint(0 + TILE_SIZE, WINW - TILE_SIZE * 2)/TILE_SIZE)*TILE_SIZE
+        self.y = int(random.randint(0 + TILE_SIZE, WINH - TILE_SIZE * 2)/TILE_SIZE)*TILE_SIZE
 
 def correct_apple_position(apple, snake):
     snake.body.append(snake.head)
@@ -47,7 +51,7 @@ def correct_apple_position(apple, snake):
         return True
     
 def event_handler(snake):
-    inputRotation = snake.rotation
+    inpurDirection = snake.headDirection
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -55,29 +59,29 @@ def event_handler(snake):
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
-                inputRotation = 0
+                inpurDirection = 0
             elif event.key == pygame.K_UP:
-                inputRotation = 90
+                inpurDirection = 90
             elif event.key == pygame.K_LEFT:
-                inputRotation = 180
+                inpurDirection = 180
             elif event.key == pygame.K_DOWN:
-                inputRotation = 270
+                inpurDirection = 270
 
-    if (snake.rotation in (0, 180) and inputRotation in (90, 270)) or (snake.rotation in (90, 270) and inputRotation in (0, 180)):
-        snake.rotation = inputRotation
+    if (snake.headDirection in (0, 180) and inpurDirection in (90, 270)) or (snake.headDirection in (90, 270) and inpurDirection in (0, 180)):
+        snake.headDirection = inpurDirection
 
 def movement(snake):
     snake.body.append(snake.head)
     for i in range(len(snake.body)-1):
         snake.body[i].x, snake.body[i].y = snake.body[i+1].x, snake.body[i+1].y
 
-    if snake.rotation == 0:
+    if snake.headDirection == 0:
         snake.head.x += TILE_SIZE
-    elif snake.rotation == 90:
+    elif snake.headDirection == 90:
         snake.head.y -= TILE_SIZE
-    elif snake.rotation == 180:
+    elif snake.headDirection == 180:
         snake.head.x -= TILE_SIZE
-    elif snake.rotation == 270:
+    elif snake.headDirection == 270:
         snake.head.y += TILE_SIZE
 
     snake.body.remove(snake.head)
@@ -98,22 +102,30 @@ def is_dead(snake):
         if snake.head.x == part.x and snake.head.y == part.y:
             return True
 
-def draw_windows(snake, apple, tail_dir):
-    WIN.fill(WHITE)
+def draw_backgound():
+    WIN.blit(BACKGROUND, (0, 0))
     for i in range(0, WINW, TILE_SIZE):
-        pygame.draw.line(WIN, BLACK, (i, 0), (i, WINH))
+        pygame.draw.line(WIN, GREEN_GREY, (i, 0), (i, WINH))
         WIN.blit(BOX_IMAGE, (i, 0))
         WIN.blit(BOX_IMAGE, (i, WINH-TILE_SIZE))
         
     for i in range(0, WINH, TILE_SIZE):
-        pygame.draw.line(WIN, BLACK, (0, i), (WINW, i))
+        pygame.draw.line(WIN, GREEN_GREY, (0, i), (WINW, i))
         WIN.blit(BOX_IMAGE, (0, i))
         WIN.blit(BOX_IMAGE, (WINW-TILE_SIZE, i))
-        
+    
+def draw_score(score):
+    font = pygame.font.Font('freesansbold.ttf', 24)
+    text = font.render(f"SCORE: {score}", True, BLACK, WHITE)
+    textRect = text.get_rect()
+    textRect.topright = (WINW - (TILE_SIZE / 2), (TILE_SIZE / 2))
+    WIN.blit(text, textRect)
+
+def draw_snake(snake):
     if snake.dead:
-        rotated_head = pygame.transform.rotate(DEAD_IMAGE, snake.rotation)
+        rotated_head = pygame.transform.rotate(DEAD_IMAGE, snake.headDirection)
     else:
-        rotated_head = pygame.transform.rotate(HEAD_IMAGE, snake.rotation)
+        rotated_head = pygame.transform.rotate(HEAD_IMAGE, snake.headDirection)
     
     snake.body.append(snake.head)
     for i, part in enumerate(snake.body):
@@ -148,22 +160,23 @@ def draw_windows(snake, apple, tail_dir):
                     WIN.blit(LTURN_IMAGE, (part.x, part.y))
 
     if snake.body[0].y == snake.body[1].y and snake.body[0].x < snake.body[1].x:
-        tail_dir = 0
+        snake.tailDirection = 0
     elif snake.body[0].y == snake.body[1].y and snake.body[0].x > snake.body[1].x:
-        tail_dir = 180
+        snake.tailDirection = 180
     elif snake.body[0].x == snake.body[1].x and snake.body[0].y < snake.body[1].y:
-        tail_dir = 270
+        snake.tailDirection = 270
     elif snake.body[0].x == snake.body[1].x and snake.body[0].y > snake.body[1].y:
-        tail_dir = 90
+        snake.tailDirection = 90
 
     snake.body.remove(snake.head)
-    rotated_tail = pygame.transform.rotate(TAIL_IMAGE, tail_dir)
-    WIN.blit(APPLE_IMAGE, (apple.x, apple.y))
+    rotated_tail = pygame.transform.rotate(TAIL_IMAGE, snake.tailDirection)
     WIN.blit(rotated_head, (snake.head.x, snake.head.y))
     WIN.blit(rotated_tail, (snake.body[0].x, snake.body[0].y))
-    pygame.display.update()
 
-def game_over():
+def draw_apple(apple):
+    WIN.blit(APPLE_IMAGE, (apple.x, apple.y))
+
+def draw_game_over():
     font = pygame.font.Font('freesansbold.ttf', 32)
     text = font.render('GAME OVER', True, BLACK, WHITE)
     textRect = text.get_rect()
@@ -179,7 +192,6 @@ def game_over():
 
 def main():
     snake = Snake()
-    tail_dir = 90
     apple = Apple()
     score = 0
 
@@ -197,17 +209,22 @@ def main():
             run = False
             snake.dead = True
 
-        draw_windows(snake, apple, tail_dir)
+        draw_backgound()
+
+        draw_snake(snake)
 
         if can_eat_apple(snake, apple):
             apple = Apple()
-            print(f"{apple.x}, {apple.y}")
             while not correct_apple_position(apple, snake):
                 apple = Apple()
-                print(f"re-evaluate. {apple.x}, {apple.y}")
             score += 1
+        
+        draw_score(score)
 
-    game_over()
+        draw_apple(apple)
+        pygame.display.update()
+    
+    draw_game_over()
 
 if __name__ == "__main__":
     main()
