@@ -6,7 +6,7 @@ WINSIZE = WINW, WINH = 750, 750
 WIN = pygame.display.set_mode(WINSIZE)
 pygame.display.set_caption("Snake Game")
 
-FPS = 5
+FPS = 8
 
 WHITE = 255, 255, 255
 BLACK = 0, 0, 0
@@ -27,12 +27,10 @@ APPLE_IMAGE = pygame.transform.scale(pygame.image.load("assets/apple.png"), (TIL
 
 class Snake():
     def __init__(self) -> None:
-        self.x = START
-        self.y = START
         self.headDirection = 90
         self.tailDirection = 90
-        self.head = pygame.Rect(self.x, self.y, TILE_SIZE, TILE_SIZE)
-        self.body = [pygame.Rect(self.x, self.y - TILE_SIZE, TILE_SIZE, TILE_SIZE)]
+        self.head = pygame.Rect(START, START, TILE_SIZE, TILE_SIZE)
+        self.body = [pygame.Rect(START, START - TILE_SIZE, TILE_SIZE, TILE_SIZE)]
         self.dead = False
     
 class Apple():
