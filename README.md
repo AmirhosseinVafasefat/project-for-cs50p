@@ -1,8 +1,5 @@
 # Snake Game with Pygame
 
-#### Video Demo:
-[Video Demo](https://youtu.be/h-lET5zv2TQ)
-
 A modern implementation of the classic **Snake** game written in **Python** using
 the **Pygame** library. The project focuses on clean object-oriented design,
 modular game logic, and custom-built graphical assets.
@@ -16,6 +13,9 @@ stored in the `assets/` directory.
 
 All sprites were designed specifically for this project using
 [pikselapp.com](https://pikselapp.com).
+
+#### Video Demo:
+[Gameplay](https://youtu.be/h-lET5zv2TQ)
 
 ## Installation
 
@@ -94,5 +94,3 @@ clarity, modularity, and maintainability.
 A known rendering issue occurs when the snake collides with its own body.
 Upon game-over, the sprite of the body segment that the head collides with
 rotates in place. The underlying cause of this behavior remains unresolved.
-
-
