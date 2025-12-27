@@ -95,11 +95,4 @@ A known rendering issue occurs when the snake collides with its own body.
 Upon game-over, the sprite of the body segment that the head collides with
 rotates in place. The underlying cause of this behavior remains unresolved.
 
-## Technologies
-
-- Python 3
-- Pygame
-
-## Project Structure
-
 
