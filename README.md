@@ -1,10 +1,105 @@
-    # Snake Game with Pygame
-    #### Video Demo:  <URL HERE>
-    #### Description:
-    This is a recreation of the old snake game via python using pygame library. The main code is in project.py in its entirety, the assets in the format of png are located in the assets folder. The assets although seemingly wonky are made by myself using pikselapp.com.
-    **How to play:** *Use arrow keys on your keyboard to change the direction of the snake. Collect apples and avoid hitting the outer border and snake’s body as it grows longer with each score!*
-    Early in the development of this game, it was decided that the data regarding the snake and the apple are better stored in classes and thus, two classes of Snake and Apple were created. Apple class was simpler and randomizes x and y coordinate of the Apple object upon initialization. Snake class however, in addition to an initial starting x and y, keeps track of the several blocks/tiles that the snake body spans to. The snake’s body is divided into a head and a body (which is a list), and each are populated with Rect objects, representing rectangles, provided by pygame module. Head.rotation and tail.rotation keep track of the direction that the sprite should be drawn in, holding values 0, 90, 180, 270, representing angels. A variable was added to hold the values of False and True for showing that the snake has met the requirements of death/game-over or not.
-    At first a simple approach was implemented for movement of the snake. Arrow keys on the keyboard changed the head of snake object, since the whole snake utilized 1 sprite in the shape of a green block. but when more sprites were added to the project, it was crucial to add direction to snake’s head and tail, and to modify them accordingly. The controls now changed the head direction and the snake would move one block/tile in the direction of the head.direction.
-    The move() function was first written as a method for Snake class, but since the rest of the functions needed both Snake and Apple objects, it was decided that this function is moved outside the Snake class for coherence.
-    In the beginning one function was implemented for drawing all sprites on the window. But later it was decided to divide the drawing function in order to call them separately with other functions in between to have a better rendition for the window. Other functions were also tidies up several times in the course of this project.
-    One bug remains unfixed, as I do not know how to resolve it. It is that when the snake hits its body and dies, the sprite for the block/tile which the head has hit rotates in its place.
+# Snake Game with Pygame
+
+#### Video Demo:
+[Video Demo](https://youtu.be/h-lET5zv2TQ)
+
+A modern implementation of the classic **Snake** game written in **Python** using
+the **Pygame** library. The project focuses on clean object-oriented design,
+modular game logic, and custom-built graphical assets.
+
+## Overview
+
+This project recreates the traditional Snake gameplay while emphasizing
+maintainable code structure and explicit separation of game entities.
+The game logic is implemented in `project.py`, and all visual assets are
+stored in the `assets/` directory.
+
+All sprites were designed specifically for this project using
+[pikselapp.com](https://pikselapp.com).
+
+## Installation
+
+### Prerequisites
+
+- Python 3.8 or later
+- `pip` package manager
+
+### Setup
+
+```bash
+git clone https://github.com/USERNAME/Snake-Game.git
+cd Snake-Game
+pip install -r requirements.txt
+```
+
+## Gameplay
+
+- Control the snake using the **arrow keys**
+- Collect apples to increase the snake’s length and score
+- Avoid collisions with:
+  - the game boundaries
+  - the snake’s own body
+
+The game ends upon collision.
+
+## Architecture and Design
+
+The game is structured around two primary classes: `Snake` and `Apple`.
+This approach was chosen to keep state management explicit and to support
+future extensibility.
+
+### Apple
+
+The `Apple` class represents a consumable game object. Upon initialization,
+it randomly generates valid grid coordinates for placement on the game board.
+
+### Snake
+
+The `Snake` class manages:
+
+- The snake’s initial position
+- A list of body segments
+- Separation between head and body logic
+- Directional state and sprite rotation
+- Game-over state tracking
+
+Each segment of the snake is represented using Pygame `Rect` objects. The head
+and tail store rotation values (`0`, `90`, `180`, `270`) to determine correct
+sprite orientation during rendering.
+
+### Movement System
+
+Early versions of the game implemented movement by directly updating the snake’s
+head position. As the visual complexity increased, movement logic was refactored
+to track directional state separately from positional updates.
+
+User input updates the snake’s heading, and the snake advances one tile per frame
+in the active direction.
+
+The `move()` function was initially implemented as a method of the `Snake` class.
+It was later extracted into a standalone function to better coordinate interactions
+between the `Snake` and `Apple` objects and reduce unnecessary coupling.
+
+### Rendering Pipeline
+
+Rendering was originally handled by a single drawing function. As the project grew,
+this logic was split into multiple rendering functions to improve readability and
+allow more granular control over draw order and update timing.
+
+The codebase was refactored multiple times throughout development to improve
+clarity, modularity, and maintainability.
+
+## Known Issue
+
+A known rendering issue occurs when the snake collides with its own body.
+Upon game-over, the sprite of the body segment that the head collides with
+rotates in place. The underlying cause of this behavior remains unresolved.
+
+## Technologies
+
+- Python 3
+- Pygame
+
+## Project Structure
+
+
